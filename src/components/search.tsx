@@ -1,16 +1,19 @@
-import { Button, HStack, Input, InputGroup } from "@chakra-ui/react"
+import { Button, HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react"
 import { MagnifyingGlass } from 'phosphor-react'
 
 const Search = () => {
 
     return (
-        <HStack gap='1'>
+        <HStack spacing='0.5'>
             <InputGroup>
-                <MagnifyingGlass size={32} />   
-                <Input placeholder='Search' />
+                <InputLeftElement>
+                    <MagnifyingGlass size={20}  />
+                </InputLeftElement>
+
+                <Input maxW='14rem' placeholder='Search' focusBorderColor='teal.400' bgColor='black.800' borderColor='black.300' _placeholder={ { color: 'gray.400' }}/>
             </InputGroup>
             
-            <Button>New</Button>
+            <Button colorScheme='teal' >New</Button>
         </HStack>
     )
 }

@@ -5,7 +5,7 @@ import { RouterProvider } from 'react-router-dom'
 
 import { router } from './routes/config'
 
-import { theme } from './theme'
+import { theme } from './theme/theme'
 
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
