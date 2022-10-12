@@ -1,11 +1,11 @@
-import { Heading, HStack, Image, VStack, Text, Button } from "@chakra-ui/react";
+import { Heading, HStack, Image, VStack, Text, Button, Flex } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { Form, useLoaderData, LoaderFunctionArgs, useFetcher, ActionFunctionArgs } from "react-router-dom";
 
 import { getContact, TContact, updateContact } from "../services/contact";
 import { PAGE_ANIMATION } from './config'
 
-const Page = motion(HStack)
+const Page = motion(Flex)
 
 function Contact() {
   const contact = useLoaderData() as TContact;
@@ -16,17 +16,26 @@ function Contact() {
       initial='hidden'
       animate='visible'
       exit='hidden'
-      flex="1" align="stretch" spacing="5" py="20" h="fit-content">
+      flex="1"
+      align='streetch'
+      spacing="5"
+      py="20"
+      px='3'
+      h="fit-content"
+      direction={['column', 'column', 'row']}
+      gap='5'
+
+    >
       <Image
-        alignSelf="start"
+        alignSelf={['center', 'center', 'start']}
         src={contact.avatar || "https://placekitten.com/g/200/200"}
         borderRadius="10px"
         objectFit="contain"
       />
 
-      <VStack flex='1' h="auto" align="start">
-        <HStack align="center" gap="3">
-          <Heading as="h1">
+      <VStack flex='1' h="auto" align="stretch">
+        <HStack align="center" justify='space-between' gap="3">
+          <Heading as="h1" fontSize={['2xl', '2xl', '4xl']}>
             {contact.first || contact.last ? (
               <>
                 {contact.first} {contact.last}

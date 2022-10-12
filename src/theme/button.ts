@@ -1,6 +1,9 @@
 import type { ComponentStyleConfig } from "@chakra-ui/theme";
 
 const Button: ComponentStyleConfig = {
+  baseStyle: {
+    zIndex: 0,
+  },
   variants: {
     delete: {
       color: "tomato",
