@@ -12,34 +12,29 @@ import {
   Form,
   redirect,
   useLoaderData,
+  useLocation,
+  useNavigate,
+  useNavigation,
 } from "react-router-dom";
+import { motion } from 'framer-motion'
 
 import { TContact, updateContact } from "../services/contact";
+import { PAGE_ANIMATION } from "./config";
 
-const INPUT_STYLES = {
-  focusBorderColor: "teal.400",
-  bgColor: "black.800",
-  borderColor: "black.300",
-  _placeholder: { color: "gray.400" },
-};
 
-const action = async ({ request, params }: ActionFunctionArgs) => {
-  const { contactId } = params as any;
-
-  const formData = (await request.formData()) as any;
-  const updates = Object.fromEntries(formData) as TContact;
-
-  await updateContact(contactId, updates);
-
-  return redirect(`/contacts/${contactId} `);
-};
+const Page = motion(VStack)
 
 function EditContact() {
   const contact = useLoaderData() as TContact;
+  const navigate = useNavigate()
 
   return (
-    <VStack
+    <Page
       as={Form}
+      variants={PAGE_ANIMATION}
+      initial='hidden'
+      animate='visible'
+      exit='hidden'
       method="post"
       align="stretch"
       spacing="5"
@@ -104,13 +99,40 @@ function EditContact() {
       </VStack>
 
       <HStack spacing="2" justify="end">
-        <Button type="button" variant="delete">
+        <Button type="button" variant="delete" onClick={() => {
+          console.log(window.history)
+          if (window.history.length > 2) {
+            return navigate(-1)
+          }
+
+          navigate('/')
+        }}>
           Cancel
         </Button>
         <Button type="submit">Save</Button>
       </HStack>
-    </VStack>
+    </Page >
   );
 }
+
+
+
+const INPUT_STYLES = {
+  focusBorderColor: "teal.400",
+  bgColor: "black.800",
+  borderColor: "black.300",
+  _placeholder: { color: "gray.400" },
+};
+
+const action = async ({ request, params }: ActionFunctionArgs) => {
+  const { contactId } = params as any;
+
+  const formData = (await request.formData()) as any;
+  const updates = Object.fromEntries(formData) as TContact;
+
+  await updateContact(contactId, updates);
+
+  return redirect(`/contacts/${contactId} `);
+};
 
 export { EditContact, action };

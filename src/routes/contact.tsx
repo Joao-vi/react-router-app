@@ -1,18 +1,22 @@
 import { Heading, HStack, Image, VStack, Text, Button } from "@chakra-ui/react";
-import { Form, useLoaderData, LoaderFunctionArgs } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Form, useLoaderData, LoaderFunctionArgs, useFetcher, ActionFunctionArgs } from "react-router-dom";
 
-import { getContact, TContact } from "../services/contact";
+import { getContact, TContact, updateContact } from "../services/contact";
+import { PAGE_ANIMATION } from './config'
 
-const loader = async (args: LoaderFunctionArgs) => {
-  const params = args.params as Record<string, string>;
-  return getContact(params.contactId);
-};
+const Page = motion(HStack)
 
 function Contact() {
   const contact = useLoaderData() as TContact;
 
   return (
-    <HStack flex="1" align="stretch" spacing="5" py="20" h="fit-content">
+    <Page
+      variants={PAGE_ANIMATION}
+      initial='hidden'
+      animate='visible'
+      exit='hidden'
+      flex="1" align="stretch" spacing="5" py="20" h="fit-content">
       <Image
         alignSelf="start"
         src={contact.avatar || "https://placekitten.com/g/200/200"}
@@ -20,7 +24,7 @@ function Contact() {
         objectFit="contain"
       />
 
-      <VStack h="auto" align="start">
+      <VStack flex='1' h="auto" align="start">
         <HStack align="center" gap="3">
           <Heading as="h1">
             {contact.first || contact.last ? (
@@ -69,16 +73,22 @@ function Contact() {
           </Form>
         </HStack>
       </VStack>
-    </HStack>
+    </Page>
   );
 }
 
 function Favorite({ contact }: { contact: TContact }) {
   let favorite = contact.favorite;
+  const fetcher = useFetcher()
+
+  if (fetcher.formData) {
+    favorite = fetcher.formData.get('favorite') === 'true'
+  }
 
   return (
-    <Form method="post">
+    <fetcher.Form method="post">
       <Button
+        type="submit"
         name="favorite"
         value={favorite ? "false" : "true"}
         aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
@@ -86,8 +96,31 @@ function Favorite({ contact }: { contact: TContact }) {
       >
         {favorite ? "★" : "☆"}
       </Button>
-    </Form>
+    </fetcher.Form>
   );
 }
 
-export { loader, Contact };
+const loader = async (args: LoaderFunctionArgs) => {
+  const params = args.params as Record<string, string>;
+  const contact = await getContact(params.contactId);
+
+  if (!contact) {
+    throw new Response("", {
+      status: 404,
+      statusText: "Not Found",
+    });
+  }
+
+  return contact
+};
+
+async function action({ request, params }: ActionFunctionArgs) {
+  let formData = await request.formData();
+
+  console.log(formData)
+  return updateContact(params.contactId!, {
+    favorite: formData.get("favorite") === "true",
+  });
+}
+
+export { loader, Contact, action };
