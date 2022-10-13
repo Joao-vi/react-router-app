@@ -17,7 +17,7 @@ const ContactList = () => {
       align="stretch"
       spacing="2"
       overflow="auto"
-      maxHeight="100%"
+      maxHeight="100vh"
       _hover={{ "::-webkit-scrollbar-thumb": { bgColor: "gray.400" } }}
       initial="hidden"
       animate="visible"

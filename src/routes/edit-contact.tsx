@@ -38,7 +38,8 @@ function EditContact() {
       method="post"
       align="stretch"
       spacing="5"
-      p="20"
+      p={['5', '5', '20']}
+      pt={['20', '20', '20']}
       h="fit-content"
     >
       <Heading>Edit</Heading>

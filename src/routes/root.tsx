@@ -64,8 +64,8 @@ const Loading = () => {
 
   return (
     <Box
-      position='absolute'
-      right={0}
+      position='fixed'
+      right='5'
       top='5'
     >
       <AnimatePresence>
@@ -119,6 +119,7 @@ const SidebarStyled = styled(VStack)`
     position: fixed;
     height: 100vh;
     top: 0;
+    width: 80vw;
 
   }
   
