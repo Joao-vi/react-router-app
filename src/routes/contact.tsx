@@ -46,7 +46,7 @@ function Contact() {
               </Text>
             )}
           </Heading>
-          <Favorite contact={contact} />
+          {!contact.isOwner && <Favorite contact={contact} />}
         </HStack>
 
         {contact.twitter && (
@@ -59,28 +59,30 @@ function Contact() {
 
         {contact.notes && <Text whiteSpace="pre-line">{contact.notes}</Text>}
 
-        <HStack
-          alignSelf="end"
-          style={{ marginTop: "auto", paddingTop: 30 }}
-          gap="1"
-        >
-          <Form
-            method="post"
-            action="destroy"
-            onSubmit={(event) => {
-              if (!confirm("Please confirm you want to delete this record.")) {
-                event.preventDefault();
-              }
-            }}
+        {!contact.isOwner &&
+          <HStack
+            alignSelf="end"
+            style={{ marginTop: "auto", paddingTop: 30 }}
+            gap="1"
           >
-            <Button type="submit" variant="delete" color="tomato">
-              Delete
-            </Button>
-          </Form>
-          <Form action="edit">
-            <Button type="submit">Edit</Button>
-          </Form>
-        </HStack>
+            <Form
+              method="post"
+              action="destroy"
+              onSubmit={(event) => {
+                if (!confirm("Please confirm you want to delete this record.")) {
+                  event.preventDefault();
+                }
+              }}
+            >
+              <Button type="submit" variant="delete" color="tomato">
+                Delete
+              </Button>
+            </Form>
+            <Form action="edit">
+              <Button type="submit">Edit</Button>
+            </Form>
+          </HStack>
+        }
       </VStack>
     </Page>
   );
@@ -126,7 +128,6 @@ const loader = async (args: LoaderFunctionArgs) => {
 async function action({ request, params }: ActionFunctionArgs) {
   let formData = await request.formData();
 
-  console.log(formData)
   return updateContact(params.contactId!, {
     favorite: formData.get("favorite") === "true",
   });

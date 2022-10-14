@@ -4,7 +4,7 @@ import { useLoaderData } from "react-router-dom";
 
 import { ContactLink } from "./contact-link";
 
-import { TContact } from "../services/contact";
+import { OWNER, TContact } from "../services/contact";
 
 
 
@@ -31,18 +31,10 @@ const ContactList = () => {
 
 const List = ({ contacts }: { contacts: TContact[] }) => {
 
-  if (!contacts.length) {
-    return (
-      <Text as="i" fontStyle="italic" color="gray.400">
-        No contacts
-      </Text>
-    )
-  }
-
   return (
     <>
       {
-        contacts.map(contact =>
+        [OWNER, ...contacts].map(contact =>
           <ContactLink href={`contacts/${contact.id}`} key={contact.id}>
             {contact.first || contact.last ?
               (`${contact.first} ${contact.last}`)

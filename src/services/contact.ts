@@ -12,14 +12,28 @@ export type TContact = {
   favorite: boolean;
   avatar?: string;
   twitter?: string;
+  isOwner?: boolean;
+};
+
+export const OWNER: TContact = {
+  id: "owner",
+  createdAt: 123141,
+  avatar: "",
+  first: "João",
+  last: "",
+  twitter: "@joao",
+  notes:
+    "Hey there! This project was made to improve my knowledge about client side navigation!\n\nI'm using React Router DOM library to manage client side navigation.",
+  isOwner: true,
+  favorite: false,
 };
 
 const dbContacts = () => localforage.getItem<TContact[]>("contacts");
 
 export async function getContacts(query = "") {
   await fakeNetwork(`getContacts:${query}`);
-  let contacts = await dbContacts();
-  if (!contacts) contacts = [];
+  let contacts = (await dbContacts()) || [];
+
   if (query) {
     contacts = matchSorter(contacts, query, { keys: ["first", "last"] });
   }
@@ -29,7 +43,7 @@ export async function getContacts(query = "") {
 export async function createContact() {
   await fakeNetwork();
   let id = Math.random().toString(36).substring(2, 9);
-  let contact = { id, createdAt: Date.now(), favorite: false };
+  let contact = { id, createdAt: Date.now(), favorite: false, isOwner: false };
   let contacts = await getContacts();
   contacts.unshift(contact);
   await set(contacts);
@@ -37,6 +51,7 @@ export async function createContact() {
 }
 
 export async function getContact(id: string) {
+  if (id === "owner") return OWNER;
   await fakeNetwork(`contact:${id}`);
 
   let contacts = (await dbContacts()) || [];
