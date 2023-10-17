@@ -1,68 +1,86 @@
-import { createBrowserRouter } from "react-router-dom";
+import { ReactNode, Suspense, useEffect, useState } from 'react'
+import {
+  Await,
+  Link,
+  Navigate,
+  Outlet,
+  Route,
+  createBrowserRouter,
+  createRoutesFromElements,
+  defer,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 
-import { ErrorPage } from "../error-page";
+const AuthRoutes = (
+  <Route
+    path="/"
+    element={<RootElement />}
+  >
+    <Route
+      index
+      element={<Dashboard />}
+    />
 
-import { Root, loader as rootLoader, action as rootAction } from "./root";
-import { Contact, loader as contactLoader, action as contactAction } from "./contact";
-import { EditContact, action as editContactAction } from "./edit-contact";
-import { action as destroyAction } from "./destroy";
-import { Index } from ".";
+    <Route
+      path="users"
+      element={<Users />}
+      loader={async (params) => {
+        console.log('ola', params)
+        const promisee = await new Promise((r, reject) => setTimeout(() => r('foi'), 2000))
+        // setSearchurlParams({ color: 'red' })
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Root />,
-    errorElement: <ErrorPage />,
-    loader: rootLoader,
-    children: [{
-      action: rootAction,
-      errorElement: <ErrorPage />,
-      children: [
-        {
-          index: true,
-          element: <Index />
-        },
-        {
-          loader: contactLoader,
-          action: contactAction,
-          path: "contacts/:contactId",
-          element: <Contact />,
-        },
-        {
-          action: editContactAction,
-          loader: contactLoader,
-          path: "contacts/:contactId/edit",
-          element: <EditContact />,
-        },
-        {
-          path: "contacts/:contactId/destroy",
-          action: destroyAction,
-          errorElement: <ErrorPage />
-        },
-      ],
-    }]
-  },
-]);
+        return defer({ user: promisee })
+      }}
+    />
+  </Route>
+)
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route>
+      <Route path="login">
+        <Route
+          index
+          element={<Login />}
+        />
+        <Route
+          path="remember-password"
+          element={<RememberPassword />}
+        />
+      </Route>
+
+      {AuthRoutes}
+
+      <Route
+        path="*"
+        element={<Navigate to="/" />}
+      />
+    </Route>
+  )
+)
 
 export const PAGE_ANIMATION = {
   hidden: {
     opacity: 0,
     y: 20,
     transition: {
-      duration: .3,
+      duration: 0.3,
       ease: 'easeOut',
-      bounce: 0
-    }
+      bounce: 0,
+    },
   },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: .3,
+      duration: 0.3,
       ease: 'easeOut',
-      bounce: 0
-    }
-  }
+      bounce: 0,
+    },
+  },
 }
 
-export { router };
+export { router }
