@@ -5,79 +5,88 @@ import * as echarts from 'echarts'
 
 import precipitation from './mocks/precipitation.json'
 
-const App = () => {
-  const ref = useRef<HTMLDivElement>(null)
+function App() {
   return (
-    <div>
-      <h1>hola</h1>
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Chart
+        option={{
+          series: [
+            {
+              type: 'line',
+              name: 'Chuva',
+              data: precipitation.precipitation.map((i) => i.accumulation),
+              smooth: 1,
+              areaStyle: {
+                color: new graphic.LinearGradient(0, 0, 0, 1, [
+                  {
+                    offset: 0,
+                    color: '#3b82f6',
+                  },
+                  {
+                    offset: 1,
+                    color: '#bfdbfe',
+                  },
+                ]),
+              },
 
-      <div style={{ width: 700, height: 600 }}>
-        <ReactECharts
-          option={{
-            series: [
-              {
-                type: 'line',
-                name: 'Chuva',
-                data: precipitation.precipitation.map((i) => i.accumulation),
-                smooth: 1,
-                large: true,
-                areaStyle: {
-                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                    {
-                      offset: 0,
-                      color: '#3b82f6',
-                    },
-                    {
-                      offset: 1,
-                      color: '#bfdbfe',
-                    },
-                  ]),
-                },
-
-                lineStyle: {
-                  width: 4,
-                  color: '#3b82f6',
-                },
-              },
-            ],
-            xAxis: {
-              type: 'category',
-              data: precipitation.precipitation.map((i) =>
-                DateUtils.getLocalDayMonthHourMinutesString(i.date)
-              ),
-              axisLine: {
-                lineStyle: {
-                  color: '#a1a1aa',
-                },
+              lineStyle: {
+                width: 4,
+                color: '#3b82f6',
               },
             },
-            yAxis: {
-              type: 'value',
-              splitLine: {
-                lineStyle: {
-                  color: '#e4e4e7',
-                  type: 'dashed',
-                },
+          ],
+          xAxis: {
+            type: 'category',
+            data: precipitation.precipitation.map((i) =>
+              DateUtils.getLocalDayMonthHourMinutesString(i.date)
+            ),
+            axisLine: {
+              lineStyle: {
+                color: '#a1a1aa',
               },
             },
-            dataZoom: [
-              {
-                type: 'inside',
+            splitLine: {
+              lineStyle: {
+                type: 'dashed',
+                color: '#e4e4e7',
               },
-            ],
-            tooltip: {
-              trigger: 'axis',
-              valueFormatter: (value) => value.toFixed(1) + 'mm',
             },
-            textStyle: {
-              color: '#3f3f46',
-              fontWeight: 500,
-              fontFamily: 'Poppins',
-              fontSize: 14,
+          },
+          yAxis: {
+            type: 'value',
+            splitLine: {
+              show: true,
+              lineStyle: {
+                color: '#e4e4e7',
+                type: 'dashed',
+              },
             },
-          }}
-        />
-      </div>
+          },
+          dataZoom: [
+            {
+              type: 'inside',
+            },
+          ],
+          tooltip: {
+            trigger: 'axis',
+            valueFormatter: (value) => value.toFixed(1) + 'mm',
+          },
+          textStyle: {
+            color: '#3f3f46',
+            fontWeight: 500,
+            fontFamily: 'Poppins',
+            fontSize: 14,
+          },
+        }}
+      />
     </div>
   )
 }
